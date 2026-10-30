@@ -28,13 +28,13 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-step.sh "Install" pnpm install --frozen-lockfile
       - name: Typecheck
-        run: pnpm typecheck
+        run: bash scripts/ci-step.sh "Typecheck" pnpm typecheck
       - name: Agent-Native guards
-        run: pnpm agent-native:doctor
+        run: bash scripts/ci-step.sh "Agent-Native guards" pnpm agent-native:doctor
       - name: Unit tests
-        run: pnpm test
+        run: bash scripts/ci-step.sh "Unit tests" pnpm test
 
   build:
     name: Production build
@@ -47,7 +47,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-step.sh "Install" pnpm install --frozen-lockfile
       - run: pnpm build
       - uses: actions/upload-artifact@v4
         with:
@@ -67,11 +67,11 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: pnpm
-      - run: pnpm install --frozen-lockfile
+      - run: bash scripts/ci-step.sh "Install" pnpm install --frozen-lockfile
       - name: Install Chromium
         run: pnpm exec playwright install --with-deps chromium
       - name: Run Playwright (production build for public pages, dev server for signed-in flows)
-        run: pnpm test:e2e
+        run: bash scripts/ci-step.sh "End-to-end tests" pnpm test:e2e
       - name: Upload Playwright report
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v4
