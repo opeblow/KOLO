@@ -34,19 +34,59 @@ Built on [Agent-Native](https://agent-native.com) for the Builder.io Agent-Nativ
 
 ## Table of contents
 
-- [Screenshots](#screenshots)
-- [The problem](#the-problem)
-- [What Kolo does](#what-kolo-does)
-- [The hard part, made visible](#the-hard-part-made-visible)
-- [Architecture](#architecture)
-  - [Data model](#data-model)
-- [Project structure](#project-structure)
-- [Run it](#run-it)
-  - [Deploy](#deploy)
-- [Tests](#tests)
-- [Continuous integration](#continuous-integration)
-- [Limitations](#limitations)
-- [Project](#project)
+<table>
+<tr>
+<td valign="top" width="33%">
+
+**Product**
+
+1. [Highlights](#highlights)
+2. [Screenshots](#screenshots)
+3. [The problem](#the-problem)
+4. [What Kolo does](#what-kolo-does)
+5. [The hard part, made visible](#the-hard-part-made-visible)
+6. [Limitations](#limitations)
+
+</td>
+<td valign="top" width="33%">
+
+**Engineering**
+
+7. [Built on Agent-Native](#built-on-agent-native)
+   - [One action, every surface](#one-action-every-surface)
+   - [An agent that knows the rules](#an-agent-that-knows-the-rules)
+   - [UI and agent share one screen](#ui-and-agent-share-one-screen)
+   - [Guardrails the framework enforces](#guardrails-the-framework-enforces)
+8. [Architecture](#architecture) · [Data model](#data-model)
+9. [Security and trust](#security-and-trust)
+10. [Performance](#performance)
+11. [Tech stack](#tech-stack)
+12. [Project structure](#project-structure)
+
+</td>
+<td valign="top" width="33%">
+
+**Use and contribute**
+
+13. [Run it](#run-it) · [Deploy](#deploy)
+14. [Tests](#tests)
+15. [Continuous integration](#continuous-integration)
+16. [Roadmap](#roadmap)
+17. [Acknowledgements](#acknowledgements)
+18. [Project](#project)
+
+</td>
+</tr>
+</table>
+
+## Highlights
+
+- **Paste, don't type.** A whole night of bank SMS in one paste. Six bank formats are parsed in code; the agent reads the rest.
+- **Every match shows its working.** A confidence score plus the evidence ("OKONKWO EMEKA J" matches Emeka Okonkwo, exactly one contribution). Correct a match once and Kolo learns that bank's spelling.
+- **The AI can't move the goalposts.** Eight money rules run inside a locked database transaction. The agent gets the same refusal a button does.
+- **Tamper-evident by anyone.** A SHA-256 hash chain that every member's phone re-verifies, with seals that travel in WhatsApp reminders.
+- **No accounts for members, no bank logins for anyone.** Members open a private link; organizers paste alerts they already receive.
+- **One codebase, five surfaces.** The app, the in-app agent, Claude via MCP, the CLI and scheduled jobs all call the same typed actions.
 
 ## Screenshots
 
@@ -86,6 +126,58 @@ Friends pool a fixed amount every week or month and take turns collecting the wh
 1. **The AI can't bend the money rules.** Ask the agent to "pay Emeka now" while two members haven't paid. `record-payout` refuses inside the transaction with `round_not_funded: Round 5 is short ₦100,000. Waiting on Bisi, Musa.`, and the agent relays it and offers reminders.
 2. **Tampering is detectable by anyone.** In development, *Ledger → Simulate tampering* plays a dishonest DB admin: it disables the trigger and cuts one recorded amount. The circle page turns red, new writes are blocked (`ledger_integrity`), and the public member page says *"Entry #2 was changed after it was recorded."*
 3. **Same action, every surface.** Each ledger entry records whether it came from the app, the agent, MCP, the CLI, or a scheduled job.
+
+## Built on Agent-Native
+
+Kolo is an [Agent-Native](https://agent-native.com) app: the agent is a first-class user of the same capabilities as the UI, not a chatbot bolted on the side. Here is how we used the framework, and why it matters for money.
+
+### One action, every surface
+
+Every capability is a single `defineAction` in [`actions/`](actions). Its Zod schema is the contract for the React UI, the in-app agent, MCP clients such as Claude, the CLI, and A2A. The description doubles as the agent's instructions, so the rules travel with the tool:
+
+```ts
+// actions/record-payout.ts (abridged)
+export default defineAction({
+  description:
+    "Record that a round's pot was paid to its recipient. Enforced rules that nobody (including you) can override: " +
+    "rounds pay in order, the round must be fully funded, the recipient must be the scheduled member…",
+  schema: z.object({ circleId: circleIdArg, round: z.number().int().min(1) /* … */ }),
+  run: async (args, ctx) =>
+    withCircleLock(args.circleId, "editor", async (locked) => {
+      const state = requireActive(locked);
+      const violation = checkPayout(state, { round: args.round /* … */ });
+      if (violation) failRule(violation); // 409: round_not_funded, out_of_order, …
+      return appendOne(locked, { kind: "payout" /* … */ }, viaFromCaller(ctx));
+    }),
+});
+```
+
+| Surface | How it calls `record-payout` | Recorded as |
+|---|---|---|
+| React UI | `useActionMutation("record-payout")` | `app` |
+| Kolo agent | Tool call from the chat sidebar | `agent` |
+| Claude Desktop or any MCP client | MCP tool | `mcp` |
+| Terminal | `pnpm action record-payout --circleId … --round 5` | `cli` |
+| Scheduled job | The same action from a job | `job` |
+
+One code path means one set of rules. A refusal reads the same everywhere: `round_not_funded: Round 5 is short ₦100,000. Waiting on Bisi, Musa.`
+
+### An agent that knows the rules
+
+- **[`AGENTS.md`](AGENTS.md)** gives the agent the domain model, the action catalogue and the hard rules: money lives only in the ledger, and refusals are final.
+- **[`.agents/skills/kolo-treasurer`](.agents/skills/kolo-treasurer/SKILL.md)** is a workflow skill: how to process a paste, when to bulk-confirm (85% and up), when to ask (60–84%), and never to invent contributions to unblock a payout.
+- **AI stays in the agent.** Actions are deterministic. Judgment work, like reading an unfamiliar bank format, softening a reminder or explaining a refusal, goes through the agent chat with `sendToAgentChat`, which carries the circle as context.
+
+### UI and agent share one screen
+
+- **Navigation state** (`circleId`, `tab`) is published to the agent, so "remind whoever's late" needs no IDs. `view-screen` gives it a fresh read of what the organizer sees.
+- **Ask Kolo** buttons hand the current circle to the agent sidebar with a ready prompt, for example a treasurer's check of who's late, what's in the inbox, and whether the round can pay out.
+- **Live sync.** When the agent writes, `useDbSync` refreshes every open tab, so the organizer watches the inbox clear in real time.
+- **Ownership and sharing** use Agent-Native's access model: `withCircleLock(circleId, "editor")` checks the caller can edit before touching the ledger.
+
+### Guardrails the framework enforces
+
+`pnpm agent-native:doctor` runs 14 static guards in CI, including scoped queries, no credentials read from `process.env`, explicit collaboration access, and migration hygiene. Kolo passes with no findings.
 
 ## Architecture
 
@@ -136,6 +228,44 @@ flowchart LR
 | `ledger_entries` | `seq`, `kind`, canonical `payload`, `prev_hash`, `hash`, `recorded_via`. Append-only trigger |
 | `payment_signals` | Inbox: raw alert, parsed fields, fingerprint (unique per circle), proposal + confidence |
 | `nudges` | Reminders actually sent |
+
+## Security and trust
+
+| Layer | Protection |
+|---|---|
+| Database | Trigger blocks `UPDATE`/`DELETE` on `ledger_entries`; unique `(circle_id, seq)` |
+| Write path | `withCircleLock`: row lock → re-verify chain → rule check → append, in one transaction |
+| Hash chain | SHA-256 over canonical JSON; each entry commits to the previous hash |
+| Members | Browsers re-verify the whole chain; seals in WhatsApp reminders catch a rewritten chain |
+| Privacy | Public pages show names and the ledger only, never phones, bank aliases or emails; 128-bit links; `noindex` |
+
+Threat model and reporting: [SECURITY.md](SECURITY.md) · Data handling: [PRIVACY.md](PRIVACY.md) · Full design: [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+
+## Performance
+
+Measured locally on 30 October 2026:
+
+| Metric | Result | Budget |
+|---|---|---|
+| Landing page, time to first byte (production build) | 28–45 ms | < 200 ms |
+| Landing page, cumulative layout shift (production build) | 0.00004 | < 0.1 |
+| Public ledger API, warm request | 30–44 ms | < 200 ms |
+| Ledger verification in the browser | One linear SHA-256 pass; the on-screen check is paced so members can watch it | < 50 ms compute for 500 entries |
+
+How: server-side rendering; public pages skip the app shell and session sync; fonts are preloaded; scroll reveals use CSS, not JavaScript; demos use `useDeferredValue` and async Web Crypto. Budgets are enforced in [`e2e/perf.spec.ts`](e2e/perf.spec.ts) and [`e2e/api.spec.ts`](e2e/api.spec.ts).
+
+## Tech stack
+
+| Layer | Technology |
+|---|---|
+| Framework | [Agent-Native](https://agent-native.com): actions, agent, MCP, sharing, doctor guards |
+| Front end | React 19, React Router 8 (SSR), Tailwind CSS 4, Radix UI, Tabler icons |
+| Server | Nitro, h3 |
+| Data | Drizzle ORM · Postgres in production (Neon, Supabase, RDS) · PGlite locally |
+| Integrity | SHA-256 via Web Crypto, shared by server and browser |
+| AI | Any provider through the AI SDK: Anthropic, OpenAI, Google, Groq, Mistral, OpenRouter, Ollama |
+| Testing | Vitest, Playwright, axe-core |
+| CI | GitHub Actions, CodeQL, Dependabot |
 
 ## Project structure
 
@@ -231,6 +361,21 @@ Every push and pull request runs [`.github/workflows/ci.yml`](.github/workflows/
 - Seal anchoring is social (seals travel in WhatsApp reminders); there is no external timestamping service yet.
 - Reminder templates: English, Nigerian Pidgin, French, Spanish, Swahili. Other languages come from the agent.
 - WhatsApp sending is user-initiated via `wa.me` links, with no WhatsApp Business API integration.
+
+## Roadmap
+
+- [ ] External timestamping of seals (for example OpenTimestamps), on top of WhatsApp-anchored seals
+- [ ] WhatsApp Business API for one-tap sending, opt-in
+- [ ] Forwarded bank notifications (SMS or email), so alerts arrive without pasting
+- [ ] More bank formats: Kuda, Palmpay, Wema/ALAT, Equity, MTN MoMo
+- [ ] Member self-reporting ("I paid"), matched against the organizer's alerts
+- [ ] Offline-first member page (PWA) for low-connectivity areas
+
+## Acknowledgements
+
+- [Agent-Native](https://agent-native.com) and the Builder.io team, for the framework and the hackathon.
+- The organizers of ajo, esusu, susu, chama, stokvel and tanda groups, whose midnight reconciliations inspired Kolo.
+- [Contributor Covenant](https://www.contributor-covenant.org), for the code of conduct.
 
 ## Project
 
