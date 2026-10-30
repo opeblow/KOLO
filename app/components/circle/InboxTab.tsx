@@ -70,7 +70,7 @@ export function InboxTab({ view }: { view: View }) {
     <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
       <aside className="space-y-4 lg:sticky lg:top-4 lg:self-start">
         <form
-          className="rounded-2xl border border-border bg-card p-4"
+          className="kolo-surface rounded-2xl p-4"
           onSubmit={(e) => {
             e.preventDefault();
             if (text.trim()) ingest.mutate({ circleId, text });
@@ -93,7 +93,7 @@ export function InboxTab({ view }: { view: View }) {
             {ingest.isPending ? "Reading…" : "Add to inbox"}
           </Button>
         </form>
-        <div className="rounded-2xl border border-border bg-card p-4 text-sm">
+        <div className="kolo-surface rounded-2xl p-4 text-sm">
           <p className="font-semibold">How matching works</p>
           <ul className="mt-2 space-y-1.5 text-muted-foreground">
             <li>The same alert or bank reference can only be counted once.</li>
