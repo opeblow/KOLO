@@ -53,7 +53,7 @@ export function DraftSetup({ view }: { view: View }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[1fr_420px]">
-      <section className="rounded-3xl border border-border bg-card p-5 sm:p-6">
+      <section className="kolo-surface rounded-[24px] p-5 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h2 className="font-display text-xl font-semibold">Payout order</h2>
@@ -99,7 +99,7 @@ export function DraftSetup({ view }: { view: View }) {
       </section>
 
       <aside className="space-y-4">
-        <div className="rounded-3xl border border-border bg-card p-5">
+        <div className="kolo-surface rounded-[24px] p-5">
           <RotationRing
             members={view.members}
             rounds={view.rounds}
