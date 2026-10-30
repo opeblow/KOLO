@@ -13,6 +13,11 @@
 
 <p align="center">
 <!-- badges:start -->
+<a href="https://github.com/opeblow/KOLO/actions/runs/41123707776"><img alt="unit tests: 52/52 passing" src="https://img.shields.io/badge/unit%20tests-52%2F52%20passing-brightgreen" /></a>
+<a href="https://github.com/opeblow/KOLO/actions/runs/41123707776"><img alt="e2e tests: 17/17 passing" src="https://img.shields.io/badge/e2e%20tests-17%2F17%20passing-brightgreen" /></a>
+<img alt="license: MIT" src="https://img.shields.io/badge/license-MIT-0E6B4A" />
+<img alt="TypeScript strict" src="https://img.shields.io/badge/TypeScript-strict-3178C6" />
+<img alt="Node 22.22 or later" src="https://img.shields.io/badge/node-%E2%89%A522.22-339933" />
 <!-- badges:end -->
 </p>
 
@@ -330,6 +335,7 @@ Any Nitro target. Set `DATABASE_URL` (Postgres: Neon, Supabase, RDS) and `BETTER
 ## Tests
 
 <!-- tests:start -->
+**[CI run on 30 October 2026](https://github.com/opeblow/KOLO/actions/runs/41123707776): 52/52 unit tests and 17/17 end-to-end tests passing** (69/69 total) on Ubuntu 24.04.
 <!-- tests:end -->
 
 ```bash
