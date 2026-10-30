@@ -139,6 +139,7 @@ export async function withCircleLock<T>(
 ): Promise<T> {
   await checkCircleAccess(circleId, role);
   return getDb().transaction(async (tx) => {
+    // guard:allow-unscoped — access was checked by checkCircleAccess above; this is the row lock for that same circle
     const [circle] = await tx
       .select()
       .from(schema.circles)
