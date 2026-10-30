@@ -267,7 +267,7 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
   return (
     <div className="space-y-6">
       <div className="grid gap-6 lg:grid-cols-[1fr_400px]">
-        <section className="rounded-3xl border border-border bg-card p-4 sm:p-6" aria-label="Rotation">
+        <section className="kolo-surface rounded-[24px] p-4 sm:p-6" aria-label="Rotation">
           <RotationRing
             members={view.members}
             rounds={view.rounds}
@@ -283,7 +283,7 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
           </div>
         </section>
 
-        <section className="flex flex-col rounded-3xl border border-border bg-card" aria-label="Current round">
+        <section className="flex flex-col kolo-surface rounded-[24px]" aria-label="Current round">
           {current && recipient ? (
             <>
               <div className="border-b border-border p-5">
@@ -302,7 +302,7 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
                   </div>
                 </div>
                 <div className="mt-4 flex items-baseline justify-between">
-                  <span className="font-display text-2xl font-semibold">
+                  <span className="kolo-kpi text-[1.75rem]">
                     <Money minor={current.collectedMinor} currency={circle.currency} />
                   </span>
                   <span className="text-sm text-muted-foreground">
@@ -347,7 +347,7 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
               </ul>
               <div className="border-t border-border p-4">
                 {funded ? (
-                  <Button className="h-11 w-full" onClick={() => setConfirmPayout(true)}>
+                  <Button className="h-12 w-full rounded-full text-[15px]" onClick={() => setConfirmPayout(true)}>
                     <IconSend className="size-4" /> Pay out <Money minor={current.potMinor} currency={circle.currency} /> to{" "}
                     {firstName(recipient.name)}
                   </Button>
@@ -355,7 +355,7 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <span className="block">
-                        <Button className="h-11 w-full" disabled>
+                        <Button className="h-12 w-full rounded-full text-[15px]" disabled>
                           <IconLock className="size-4" /> Payout locked
                         </Button>
                       </span>
@@ -383,17 +383,17 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="kolo-surface rounded-2xl p-5">
           <p className="text-sm text-muted-foreground">You should be holding</p>
-          <p className="mt-1 font-display text-2xl font-semibold"><Money minor={view.heldMinor} currency={circle.currency} /></p>
+          <p className="kolo-kpi mt-3 text-[1.9rem]"><Money minor={view.heldMinor} currency={circle.currency} /></p>
           <p className="mt-1 text-xs text-muted-foreground">Collected minus paid out, from the ledger.</p>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="kolo-surface rounded-2xl p-5">
           <p className="text-sm text-muted-foreground">Paid out so far</p>
-          <p className="mt-1 font-display text-2xl font-semibold"><Money minor={view.totalPaidOutMinor} currency={circle.currency} /></p>
+          <p className="kolo-kpi mt-3 text-[1.9rem]"><Money minor={view.totalPaidOutMinor} currency={circle.currency} /></p>
           <p className="mt-1 text-xs text-muted-foreground">{view.rounds.filter((r) => r.payout).length} of {view.rounds.length} rounds</p>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="kolo-surface rounded-2xl p-5">
           <p className="flex items-center gap-1 text-sm text-muted-foreground">
             Trust exposure
             <Tooltip>
@@ -405,7 +405,7 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
               </TooltipContent>
             </Tooltip>
           </p>
-          <p className="mt-1 font-display text-2xl font-semibold"><Money minor={view.exposure.totalMinor} currency={circle.currency} /></p>
+          <p className="kolo-kpi mt-3 text-[1.9rem]"><Money minor={view.exposure.totalMinor} currency={circle.currency} /></p>
           <p className="mt-1 truncate text-xs text-muted-foreground">
             {view.exposure.members.length ? view.exposure.members.map((m) => firstName(m.name)).join(", ") : "Nobody owes after collecting"}
           </p>
@@ -414,20 +414,20 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
           type="button"
           onClick={view.pendingSignals ? onOpenInbox : () => setRemindersOpen(true)}
           className={cn(
-            "rounded-2xl border p-5 text-left transition",
+            "kolo-lift rounded-2xl border p-5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
             view.pendingSignals ? "border-primary/30 bg-accent hover:border-primary/60" : view.late.length ? "border-clay/30 bg-clay/5 hover:border-clay/50" : "border-border bg-card hover:border-primary/30",
           )}
         >
           {view.pendingSignals ? (
             <>
               <p className="flex items-center gap-1.5 text-sm font-medium text-accent-foreground"><IconInbox className="size-4" /> Inbox</p>
-              <p className="mt-1 font-display text-2xl font-semibold">{view.pendingSignals} to match</p>
+              <p className="kolo-kpi mt-3 text-[1.9rem]">{view.pendingSignals} to match</p>
               <p className="mt-1 text-xs text-muted-foreground">Bank alerts waiting for a decision →</p>
             </>
           ) : (
             <>
               <p className="flex items-center gap-1.5 text-sm font-medium"><IconBrandWhatsapp className="size-4" /> Reminders</p>
-              <p className="mt-1 font-display text-2xl font-semibold">
+              <p className="kolo-kpi mt-3 text-[1.9rem]">
                 {view.late.length ? `${new Set(view.late.map((l) => l.memberId)).size} late` : "All on time"}
               </p>
               <p className="mt-1 text-xs text-muted-foreground">Draft WhatsApp reminders →</p>
@@ -437,10 +437,10 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
       </div>
 
       {view.late.length ? (
-        <section className="rounded-2xl border border-clay/25 bg-card p-5">
+        <section className="kolo-surface rounded-[24px] border-clay/30 p-5 sm:p-6">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <h2 className="font-semibold">Late payments</h2>
+              <h2 className="font-display text-lg font-semibold tracking-tight">Late payments</h2>
               <p className="text-sm text-muted-foreground">Past the {circle.graceDays}-day grace period.</p>
             </div>
             <Button variant="outline" onClick={() => setRemindersOpen(true)}>
@@ -463,10 +463,10 @@ export function OverviewTab({ view, onOpenInbox }: { view: View; onOpenInbox: ()
       ) : null}
 
       <section aria-label="Schedule">
-        <h2 className="font-semibold">Schedule</h2>
+        <h2 className="font-display text-lg font-semibold tracking-tight">Schedule</h2>
         <ol className="mt-3 flex gap-2 overflow-x-auto pb-2">
           {view.rounds.map((r) => (
-            <li key={r.round} className={cn("min-w-[140px] rounded-2xl border bg-card p-3", r.round === view.currentRound ? "border-primary" : "border-border")}>
+            <li key={r.round} className={cn("kolo-surface min-w-[156px] rounded-2xl p-4", r.round === view.currentRound && "border-primary ring-2 ring-primary/15")}>
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs text-muted-foreground">R{r.round}</span>
                 <span className={cn("rounded-full px-2 py-0.5 text-[10.5px] font-semibold capitalize", STATUS_STYLE[r.status])}>
