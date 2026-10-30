@@ -336,7 +336,22 @@ pnpm action verify-ledger --circleId <id>
 
 ### Deploy
 
-Any Nitro target. Set `DATABASE_URL` (Postgres: Neon, Supabase, RDS) and `BETTER_AUTH_SECRET`, run `pnpm migrate:production`, then `pnpm build`.
+The live app runs on **Vercel** with a **Neon** Postgres database. [`vercel.json`](vercel.json) holds the build settings, so importing the repo is enough.
+
+1. Import `opeblow/KOLO` at [vercel.com/new](https://vercel.com/new) with Framework Preset **Other** and Node.js **24.x**.
+2. Add environment variables:
+
+   | Name | Value |
+   |---|---|
+   | `DATABASE_URL` | Postgres connection string (Neon, Supabase or RDS) |
+   | `BETTER_AUTH_SECRET` | 64 random hex characters (`openssl rand -hex 32`) |
+   | `AGENT_NATIVE_VERCEL_CRON_SCHEDULE` | `0 9 * * *` (Hobby plans allow daily crons only) |
+   | `CRON_SECRET` | Any random string; Vercel sends it with each cron call |
+   | `ANTHROPIC_API_KEY` or `OPENAI_API_KEY` | Optional, enables the agent |
+
+3. Create the tables once: `DATABASE_URL=... pnpm migrate:production`.
+
+Other Nitro targets work too: set `NITRO_PRESET` and run `pnpm build`. For Cloudflare Workers, use `NITRO_PRESET=cloudflare_module`, then run `node scripts/cf-postbuild.mjs` before `wrangler deploy`.
 
 ## Tests
 
