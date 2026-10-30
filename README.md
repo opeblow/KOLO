@@ -6,7 +6,10 @@
 
 <p align="center"><b>Savings circles, kept honest.</b><br/>An AI treasurer for ajo, esusu, susu, chama, stokvel and tanda groups, with a ledger every member can verify on their own phone.</p>
 
+<p align="center"><a href="https://kolo-62vk.vercel.app"><b>Live app: kolo-62vk.vercel.app</b></a></p>
+
 <p align="center">
+<a href="https://kolo-62vk.vercel.app"><img alt="Live on Vercel" src="https://img.shields.io/badge/live-kolo--62vk.vercel.app-0E6B4A?logo=vercel" /></a>
 <a href="https://github.com/opeblow/KOLO/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/opeblow/KOLO/actions/workflows/ci.yml/badge.svg" /></a>
 <a href="https://github.com/opeblow/KOLO/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/opeblow/KOLO/actions/workflows/codeql.yml/badge.svg" /></a>
 </p>
@@ -22,6 +25,7 @@
 </p>
 
 <p align="center">
+<a href="https://kolo-62vk.vercel.app">Live app</a> ·
 <a href="#screenshots">Screenshots</a> ·
 <a href="#run-it">Run it</a> ·
 <a href="docs/ARCHITECTURE.md">System design</a> ·
@@ -36,6 +40,8 @@ Organizers paste bank alerts. Kolo's agent matches every payment to a member and
 > Kolo keeps records. It never holds or moves money.
 
 Built on [Agent-Native](https://agent-native.com) for the Builder.io Agent-Native Hackathon.
+
+**Try it now:** [https://kolo-62vk.vercel.app](https://kolo-62vk.vercel.app). Paste bank alerts into the live matcher on the landing page, or try to tamper with the sample ledger. No sign-up needed.
 
 ## Table of contents
 
