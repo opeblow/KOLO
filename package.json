@@ -13,7 +13,9 @@
     "action": "agent-native action",
     "script": "agent-native script",
     "test": "vitest --run --passWithNoTests",
-    "agent-native:doctor": "agent-native doctor"
+    "agent-native:doctor": "agent-native doctor",
+    "test:e2e": "playwright test",
+    "test:all": "node scripts/test-all.mjs"
   },
   "dependencies": {
     "@agent-native/agentkit": "^0.222.2",
@@ -51,6 +53,8 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.11.0",
+    "@playwright/test": "1.56.1",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-alert-dialog": "^1.1.15",
     "@radix-ui/react-aspect-ratio": "^1.1.8",
