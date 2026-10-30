@@ -162,7 +162,7 @@ export function LedgerTab({ view }: { view: View }) {
         ) : null}
       </div>
 
-      <div className="overflow-hidden rounded-2xl border border-border bg-card">
+      <div className="overflow-hidden kolo-surface rounded-2xl">
         {isPending ? (
           <div className="space-y-2 p-4">
             {[0, 1, 2, 3].map((i) => (
