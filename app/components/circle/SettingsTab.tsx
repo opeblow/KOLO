@@ -39,7 +39,7 @@ export function SettingsTab({ view }: { view: View }) {
 
   return (
     <div className="grid gap-6 lg:grid-cols-2">
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className="kolo-surface rounded-2xl p-5">
         <h2 className="font-semibold">Details</h2>
         <form
           className="mt-4 space-y-4"
@@ -65,7 +65,7 @@ export function SettingsTab({ view }: { view: View }) {
         </form>
       </section>
 
-      <section className="rounded-2xl border border-border bg-card p-5">
+      <section className="kolo-surface rounded-2xl p-5">
         <h2 className="flex items-center gap-2 font-semibold">
           <IconArrowsExchange className="size-4" /> Swap turns
         </h2>
@@ -111,7 +111,7 @@ export function SettingsTab({ view }: { view: View }) {
         )}
       </section>
 
-      <section className="rounded-2xl border border-border bg-card p-5 lg:col-span-2">
+      <section className="kolo-surface rounded-2xl p-5 lg:col-span-2">
         <h2 className="font-semibold">Close the circle</h2>
         <p className="mt-1 text-sm text-muted-foreground">
           Available after every round pays out. The final seal is the group&apos;s proof that the books balanced.
