@@ -1,21 +1,67 @@
 <p align="center">
-  <img src="docs/logo.svg" alt="Kolo logo" width="88" height="88" />
+  <img src="docs/logo.svg" alt="Kolo logo" width="96" height="96" />
 </p>
 
-<h1 align="center">Kolo: savings circles, kept honest</h1>
+<h1 align="center">Kolo</h1>
+
+<p align="center"><b>Savings circles, kept honest.</b><br/>An AI treasurer for ajo, esusu, susu, chama, stokvel and tanda groups, with a ledger every member can verify on their own phone.</p>
+
+<p align="center">
+<a href="https://github.com/opeblow/KOLO/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/opeblow/KOLO/actions/workflows/ci.yml/badge.svg" /></a>
+<a href="https://github.com/opeblow/KOLO/actions/workflows/codeql.yml"><img alt="CodeQL" src="https://github.com/opeblow/KOLO/actions/workflows/codeql.yml/badge.svg" /></a>
+</p>
 
 <p align="center">
 <!-- badges:start -->
 <!-- badges:end -->
 </p>
 
-**An AI treasurer for rotating savings groups** (ajo, esusu and adashi in Nigeria, susu in Ghana, chama in Kenya, stokvel in South Africa, tanda in Mexico, hui in China, chit funds in India). Organizers paste bank alerts; Kolo's agent matches every payment to a member and explains why, chases late payers through WhatsApp, and keeps a hash-chained ledger that every member can verify on their own phone, without trusting the organizer or Kolo's servers.
+<p align="center">
+<a href="#screenshots">Screenshots</a> ·
+<a href="#run-it">Run it</a> ·
+<a href="docs/ARCHITECTURE.md">System design</a> ·
+<a href="docs/TESTING.md">Testing</a> ·
+<a href="CONTRIBUTING.md">Contributing</a>
+</p>
 
-Built on [Agent-Native](https://agent-native.com) for the Builder.io Agent-Native Hackathon.
+<p align="center"><img src="docs/screenshots/landing-hero.jpg" alt="Kolo landing page: 'Your ajo, kept honest.' beside a live savings-circle dashboard" width="900" /></p>
+
+Organizers paste bank alerts. Kolo's agent matches every payment to a member and explains why, chases late payers through WhatsApp, and keeps a SHA-256 hash-chained ledger that members verify in their own browser, without trusting the organizer or Kolo's servers.
 
 > Kolo keeps records. It never holds or moves money.
 
----
+Built on [Agent-Native](https://agent-native.com) for the Builder.io Agent-Native Hackathon.
+
+## Table of contents
+
+- [Screenshots](#screenshots)
+- [The problem](#the-problem)
+- [What Kolo does](#what-kolo-does)
+- [The hard part, made visible](#the-hard-part-made-visible)
+- [Architecture](#architecture)
+  - [Data model](#data-model)
+- [Project structure](#project-structure)
+- [Run it](#run-it)
+  - [Deploy](#deploy)
+- [Tests](#tests)
+- [Continuous integration](#continuous-integration)
+- [Limitations](#limitations)
+- [Project](#project)
+
+## Screenshots
+
+| | |
+|---|---|
+| <img src="docs/screenshots/landing-demo.jpg" alt="Live alert matcher" /> | <img src="docs/screenshots/landing-tamper.jpg" alt="Tamper demo" /> |
+| **Live matcher.** Paste real bank SMS on the landing page; the same parser and name matcher the app uses run in the visitor's browser and show their reasoning. | **Try to cook the books.** A real SHA-256 ledger built in the browser. Cut an amount and the chain breaks; rehash to cover it up and the members' seal stops matching. |
+| <img src="docs/screenshots/app-circles.jpg" alt="Circles list" /> | <img src="docs/screenshots/app-overview.jpg" alt="Circle overview" /> |
+| **Treasury.** Every circle at a glance: late payments, alerts waiting, and a progress ring for the current pot. | **Circle overview.** The rotation ring, who has paid this round, and a payout button that stays locked until the round is fully funded. |
+| <img src="docs/screenshots/app-inbox.jpg" alt="Payment inbox" /> | <img src="docs/screenshots/app-ledger.jpg" alt="Ledger" /> |
+| **Payment inbox.** Pasted alerts become proposals with a confidence score and the evidence behind it. Confirm in one tap. | **Hash-chained ledger.** Append-only entries, each sealed to the one before. Verify the whole chain in the browser. |
+| <img src="docs/screenshots/app-members.jpg" alt="Members" /> | <img src="docs/screenshots/app-new.jpg" alt="New circle" /> |
+| **Members.** Payout order, what each member has paid and still owes, and their private verification link. | **New circle.** Terms and payout order in one form, or paste the group's rules from WhatsApp and let the agent draft it. |
+
+<p align="center"><img src="docs/screenshots/landing-features.jpg" alt="Feature grid: rules the AI can't bend, WhatsApp reminders, trust exposure" width="900" /></p>
 
 ## The problem
 
@@ -91,6 +137,43 @@ flowchart LR
 | `payment_signals` | Inbox: raw alert, parsed fields, fingerprint (unique per circle), proposal + confidence |
 | `nudges` | Reminders actually sent |
 
+## Project structure
+
+```text
+kolo/
+├── actions/                  # One typed action per capability, shared by UI, agent, MCP and CLI
+│   ├── ingest-alerts.ts      #   pasted bank alerts → parsed, de-duplicated inbox
+│   ├── confirm-payment.ts    #   inbox → ledger (rules checked under lock)
+│   ├── record-payout.ts      #   guarded payout: in order, fully funded, right recipient
+│   ├── verify-ledger.ts      #   recompute the whole hash chain
+│   └── …                     #   30 action files in total
+├── app/                      # React Router 8 front end (SSR)
+│   ├── routes/               #   /, /circles, /circles/:id, /v/:token, /m/:token
+│   ├── components/
+│   │   ├── landing/          #   landing page and live demos
+│   │   ├── circle/           #   overview, inbox, ledger, members, settings tabs
+│   │   ├── public/           #   member verification page
+│   │   └── kolo/             #   brand mark, seal, rotation ring
+│   └── global.css            #   design tokens (light and dark)
+├── shared/                   # Pure core that runs on the server and in the browser
+│   ├── ledger.ts             #   canonical JSON + SHA-256 chain + verifyChain
+│   ├── circle-state.ts       #   ledger fold and the rules engine
+│   ├── alerts.ts             #   bank-alert parser (GTBank, Access, OPay, M-Pesa, Zelle…)
+│   ├── matcher.ts            #   sender-name → member matching with reasons
+│   ├── money.ts              #   integer minor units and formatting
+│   └── schedule.ts           #   due dates per cadence
+├── server/                   # Nitro server
+│   ├── db/                   #   Drizzle schema (append-only ledger trigger)
+│   ├── lib/                  #   withCircleLock, public view, reminders
+│   └── routes/api/public/    #   read-only member JSON
+├── tests/                    # Unit tests (Vitest)
+├── e2e/                      # End-to-end tests (Playwright)
+├── scripts/                  # test runner and badge sync
+├── docs/                     # architecture, testing, logo, screenshots
+├── .github/                  # CI, CodeQL, Dependabot, templates
+└── AGENTS.md                 # Agent guide and action catalogue
+```
+
 ## Run it
 
 Requires Node ≥ 22.22 and pnpm.
@@ -127,6 +210,18 @@ pnpm typecheck    # strict: noUncheckedIndexedAccess + exactOptionalPropertyType
 ```
 
 What each suite covers, and how to run it, is in [docs/TESTING.md](docs/TESTING.md). System design and latency budgets are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+
+## Continuous integration
+
+Every push and pull request runs [`.github/workflows/ci.yml`](.github/workflows/ci.yml):
+
+| Job | Runs |
+|---|---|
+| Typecheck, guards and unit tests | `pnpm typecheck`, `pnpm agent-native:doctor`, `pnpm test` |
+| Production build | `pnpm build`, uploaded as an artifact |
+| End-to-end tests | Playwright against the production build and dev server; HTML report uploaded as an artifact |
+
+[CodeQL](.github/workflows/codeql.yml) scans the code weekly and on every pull request. Dependabot keeps npm packages and Actions current.
 
 ## Limitations
 
