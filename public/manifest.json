@@ -1,10 +1,10 @@
 {
   "name": "Kolo",
   "short_name": "Kolo",
-  "description": "Workspace app for Kolo.",
-  "start_url": "./home",
-  "background_color": "#111111",
-  "theme_color": "#18181B",
+  "description": "Savings circles, kept honest.",
+  "start_url": "./circles",
+  "background_color": "#F4F5F1",
+  "theme_color": "#0E6B4A",
   "icons": [
     {
       "src": "icon-192.svg",
