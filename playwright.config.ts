@@ -35,6 +35,6 @@ export default defineConfig({
       reuseExistingServer: true,
       timeout: 600_000,
     },
-    { command: "pnpm dev", url: APP_URL, reuseExistingServer: true, timeout: 180_000 },
+    { command: "npx agent-native dev", url: APP_URL, reuseExistingServer: true, timeout: 180_000 },
   ],
 });
