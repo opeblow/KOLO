@@ -41,3 +41,25 @@ learnings.md
 .vercel/
 .agent-native/
 data/*.lock
+
+# Playwright
+e2e/.report/
+e2e/.results/
+
+# Caches and tooling
+coverage/
+*.tsbuildinfo
+.cache/
+.eslintcache
+.pnpm-store/
+test-results/
+playwright-report/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Keys and certificates
+*.pem
+*.key
+*.p12
