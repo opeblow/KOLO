@@ -1,4 +1,13 @@
-# Kolo: savings circles, kept honest
+<p align="center">
+  <img src="docs/logo.svg" alt="Kolo logo" width="88" height="88" />
+</p>
+
+<h1 align="center">Kolo: savings circles, kept honest</h1>
+
+<p align="center">
+<!-- badges:start -->
+<!-- badges:end -->
+</p>
 
 **An AI treasurer for rotating savings groups** (ajo, esusu and adashi in Nigeria, susu in Ghana, chama in Kenya, stokvel in South Africa, tanda in Mexico, hui in China, chit funds in India). Organizers paste bank alerts; Kolo's agent matches every payment to a member and explains why, chases late payers through WhatsApp, and keeps a hash-chained ledger that every member can verify on their own phone, without trusting the organizer or Kolo's servers.
 
@@ -107,13 +116,17 @@ Any Nitro target. Set `DATABASE_URL` (Postgres: Neon, Supabase, RDS) and `BETTER
 
 ## Tests
 
+<!-- tests:start -->
+<!-- tests:end -->
+
 ```bash
-pnpm test         # 52 tests: ledger tamper detection, payout rules, parser formats, matcher, schedule, money
+pnpm test         # unit tests (Vitest): ledger tamper detection, payout rules, parser formats, matcher, schedule, money
+pnpm test:e2e     # end-to-end tests (Playwright): landing demos, organizer workflow, member verification, accessibility, performance
+pnpm test:all     # both, then writes the counts above and the badges from the actual results
 pnpm typecheck    # strict: noUncheckedIndexedAccess + exactOptionalPropertyTypes
-pnpm agent-native:doctor
 ```
 
-Last run: **52/52 passing**, typecheck clean, doctor clean (14 guards, no findings). Rules were also exercised end to end through the CLI against the running app: underfunded payout refused, out-of-order payout refused, double payout refused, low-confidence match confirmed with alias learning, chain verified (27 → 30 entries).
+What each suite covers, and how to run it, is in [docs/TESTING.md](docs/TESTING.md). System design and latency budgets are in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ## Limitations
 
@@ -123,3 +136,8 @@ Last run: **52/52 passing**, typecheck clean, doctor clean (14 guards, no findin
 - Seal anchoring is social (seals travel in WhatsApp reminders); there is no external timestamping service yet.
 - Reminder templates: English, Nigerian Pidgin, French, Spanish, Swahili. Other languages come from the agent.
 - WhatsApp sending is user-initiated via `wa.me` links, with no WhatsApp Business API integration.
+
+## Project
+
+- [Contributing](CONTRIBUTING.md) · [Code of Conduct](CODE_OF_CONDUCT.md) · [Security](SECURITY.md) · [Privacy](PRIVACY.md)
+- Licensed under the [MIT License](LICENSE).
