@@ -7,7 +7,7 @@ import { getThemeInitScript } from "@agent-native/core/client/theme";
 import { AppProviders } from "@agent-native/toolkit/app/providers";
 import { useCommandMenuShortcut } from "@agent-native/toolkit/app/shared";
 import { CommandMenu } from "@agent-native/toolkit/app/shared";
-import { useQueryClient } from "@tanstack/react-query";
+import { QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import { useCallback, useState } from "react";
 import {
@@ -32,6 +32,7 @@ import {
   skeletonLayoutForPath,
   threadIdFromPath,
 } from "@/lib/chat-paths";
+import { isPublicPage } from "@/lib/public-pages";
 import { TAB_ID } from "@/lib/tab-id";
 
 import { i18nCatalog } from "./i18n";
@@ -71,7 +72,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
           suppressHydrationWarning
           dangerouslySetInnerHTML={{ __html: LOCALE_INIT_SCRIPT }}
         />
-        <meta name="theme-color" content="#18181B" />
+        <meta name="theme-color" content="#0E6B4A" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta
           name="apple-mobile-web-app-status-bar-style"
@@ -180,6 +181,15 @@ export default function Root() {
   // The path, not the visitor, picks the shell, so the SSR shell stays one
   // cached page per URL.
   const { pathname } = useLocation();
+  // The landing page and the members' verification pages are public: no app
+  // shell, no session sync, nothing that needs a signed-in user.
+  if (isPublicPage(pathname)) {
+    return (
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
+    );
+  }
   return (
     <AppToolkitProvider>
       <AppProviders

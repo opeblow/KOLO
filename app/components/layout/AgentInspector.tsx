@@ -37,12 +37,12 @@ export function AgentInspector({
       browserTabId={TAB_ID}
       openOnChatRunning={chatHomeHandoffActive}
       onFullscreenRequest={openAskAgentFullscreen}
-      emptyStateText={t("chat.inspectEmptyState")}
+      emptyStateText="Kolo is your treasurer. Ask about payments, late payers, or the ledger."
       agentPageHref="/settings/agent"
       suggestions={[
-        t("chat.inspectSuggestionCapabilities"),
-        t("chat.inspectSuggestionHello"),
-        t("chat.inspectSuggestionAction"),
+        "Who's late in this circle, and what do they owe?",
+        "Process the alerts in the inbox and tell me what you'd confirm",
+        "Can the next round pay out? If not, why?",
       ]}
     >
       {children}

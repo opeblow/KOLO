@@ -31,3 +31,23 @@ Use `adding-a-feature` for functional parity and `frontend-design` for a user-fa
 Before building common workspace or agent UI, read `agent-native-toolkit`; for supported customization, read `customizing-agent-native`.
 
 - Guarded verification: run `pnpm agent-native:doctor`; fix findings before done.
+
+## Kolo — savings-circle treasurer
+
+Kolo runs rotating savings circles (ajo, esusu, tanda, chama, susu). `/circles` lists them; `/circles/:id?tab=overview|inbox|ledger|members|settings` is one circle; `/` is the public landing page; `/v/:token` and `/m/:token` are public, read-only member pages that re-verify the ledger in the browser.
+
+- Money lives only in `ledger_entries`: append-only (a DB trigger blocks UPDATE/DELETE) and SHA-256 hash-chained per circle. Balances are a fold over the ledger (`shared/circle-state.ts`); never compute or store them elsewhere.
+- Every write goes through `withCircleLock` (row lock + chain re-verification). Rules live in `shared/circle-state.ts` and run on the server; refusals are 409s with codes `round_not_funded`, `out_of_order`, `wrong_recipient`, `amount_mismatch`, `overpayment`, `round_already_paid`, `terms_frozen`, `ledger_integrity`. Report them plainly; never work around one by inventing contributions or consent.
+- Inputs take major units (50000 = ₦50,000); results return integer minor units. Due dates are calendar dates `YYYY-MM-DD`.
+- `navigation` adds `circleId` and `tab` on circle pages.
+- Workflow skill: `.agents/skills/kolo-treasurer/SKILL.md`.
+
+| Action | Purpose |
+|---|---|
+| list-circles / get-circle | Circles and full derived state |
+| create-circle / update-circle / upsert-member / set-payout-order / activate-circle | Draft setup, then seal terms |
+| ingest-alerts / amend-payment / list-payment-inbox | Pasted bank alerts → matched inbox |
+| confirm-payment / confirm-matches / reject-payment | Inbox → ledger |
+| record-contribution / record-payout / swap-turns / reverse-entry / close-circle | Guarded ledger writes |
+| draft-reminders / log-nudge | WhatsApp reminders (organizer sends) |
+| list-ledger / verify-ledger | Audit and integrity |

@@ -1,4 +1,6 @@
 @import "@fontsource-variable/inter";
+@import "@fontsource-variable/bricolage-grotesque";
+@import "@fontsource-variable/jetbrains-mono";
 
 @import "tailwindcss";
 @import "@agent-native/toolkit/styles.css";
@@ -6,38 +8,53 @@
 @source "./**/*.{ts,tsx}";
 
 :root {
-  --background: 0 0% 100%;
-  --foreground: 0 0% 10%;
+  /* Kolo — "market ledger". Paper, ink, emerald for money, marigold for the
+     pot, clay only for lateness. Values are HSL channels for the toolkit. */
+  --background: 80 14% 96%;
+  --foreground: 152 27% 8%;
   --card: 0 0% 100%;
-  --card-foreground: 0 0% 10%;
+  --card-foreground: 152 27% 8%;
   --popover: 0 0% 100%;
-  --popover-foreground: 0 0% 10%;
-  --primary: 0 0% 15%;
+  --popover-foreground: 152 27% 8%;
+  --primary: 158 77% 24%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 0 0% 95%;
-  --secondary-foreground: 0 0% 15%;
-  --muted: 0 0% 95%;
-  --muted-foreground: 0 0% 43%;
-  --accent: 0 0% 95%;
-  --accent-foreground: 0 0% 15%;
-  --destructive: 0 91% 71%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 90%;
-  --input: 0 0% 90%;
-  --ring: 0 0% 40%;
-  --radius: 0.5rem;
-  --sidebar-background: 0 0% 97%;
-  --sidebar-foreground: 0 0% 43%;
-  --sidebar-primary: 0 0% 15%;
+  --secondary: 80 12% 92%;
+  --secondary-foreground: 152 27% 12%;
+  --muted: 80 12% 92%;
+  --muted-foreground: 148 6% 38%;
+  --accent: 150 27% 92%;
+  --accent-foreground: 158 76% 18%;
+  --destructive: 8 62% 47%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 87 11% 87%;
+  --input: 87 11% 84%;
+  --ring: 158 77% 30%;
+  --radius: 0.75rem;
+  --sidebar-background: 80 15% 93.5%;
+  --sidebar-foreground: 148 6% 36%;
+  --sidebar-primary: 158 77% 24%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 0 0% 95%;
-  --sidebar-accent-foreground: 0 0% 15%;
-  --sidebar-border: 0 0% 90%;
-  --sidebar-ring: 0 0% 40%;
+  --sidebar-accent: 85 13% 88%;
+  --sidebar-accent-foreground: 152 27% 10%;
+  --sidebar-border: 87 11% 86%;
+  --sidebar-ring: 158 77% 30%;
+  --gold: 40 90% 58%;
+  --gold-foreground: 35 80% 14%;
+  --clay: 8 62% 47%;
+  --emerald-ink: 158 76% 14%;
   --chat-sidebar-width: 17.5rem;
   --chat-sidebar-content-inset: 0.5rem;
   --chat-sidebar-row-padding: 0.75rem;
   --chat-sidebar-title-fade: 1.25rem;
+}
+
+@theme inline {
+  --font-display: "Bricolage Grotesque Variable", "Inter Variable", sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+  --color-gold: hsl(var(--gold));
+  --color-gold-foreground: hsl(var(--gold-foreground));
+  --color-clay: hsl(var(--clay));
+  --color-emerald-ink: hsl(var(--emerald-ink));
 }
 
 .chat-layout-shell {
@@ -229,34 +246,38 @@
 }
 
 .dark {
-  --background: 0 0% 13%;
-  --foreground: 0 0% 90%;
-  --card: 0 0% 16.47%;
-  --card-foreground: 0 0% 90%;
-  --popover: 0 0% 15%;
-  --popover-foreground: 0 0% 90%;
-  --primary: 0 0% 75%;
-  --primary-foreground: 0 0% 10%;
-  --secondary: 0 0% 18%;
-  --secondary-foreground: 0 0% 90%;
-  --muted: 0 0% 16%;
-  --muted-foreground: 0 0% 60%;
-  --accent: 0 0% 18%;
-  --accent-foreground: 0 0% 90%;
-  --destructive: 0 84% 60%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 24%;
-  --input: 0 0% 24%;
-  --ring: 0 0% 60%;
-  --radius: 0.5rem;
-  --sidebar-background: 0 0% 10%;
-  --sidebar-foreground: 0 0% 60%;
-  --sidebar-primary: 0 0% 75%;
-  --sidebar-primary-foreground: 0 0% 10%;
-  --sidebar-accent: 0 0% 16%;
-  --sidebar-accent-foreground: 0 0% 90%;
-  --sidebar-border: 0 0% 20%;
-  --sidebar-ring: 0 0% 60%;
+  --background: 150 21% 5%;
+  --foreground: 135 11% 91%;
+  --card: 153 21% 8%;
+  --card-foreground: 135 11% 91%;
+  --popover: 153 21% 9%;
+  --popover-foreground: 135 11% 91%;
+  --primary: 157 53% 48%;
+  --primary-foreground: 155 60% 6%;
+  --secondary: 152 19% 12%;
+  --secondary-foreground: 135 11% 91%;
+  --muted: 152 19% 11%;
+  --muted-foreground: 148 9% 60%;
+  --accent: 158 44% 13%;
+  --accent-foreground: 153 62% 84%;
+  --destructive: 9 74% 60%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 152 17% 15%;
+  --input: 152 17% 18%;
+  --ring: 157 53% 48%;
+  --radius: 0.75rem;
+  --sidebar-background: 153 21% 6.5%;
+  --sidebar-foreground: 148 9% 58%;
+  --sidebar-primary: 157 53% 48%;
+  --sidebar-primary-foreground: 155 60% 6%;
+  --sidebar-accent: 152 19% 12%;
+  --sidebar-accent-foreground: 135 11% 91%;
+  --sidebar-border: 152 17% 13%;
+  --sidebar-ring: 157 53% 48%;
+  --gold: 41 88% 62%;
+  --gold-foreground: 35 80% 10%;
+  --clay: 9 74% 60%;
+  --emerald-ink: 153 62% 84%;
 }
 
 @layer base {
@@ -280,4 +301,85 @@
 }
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--muted-foreground) / 0.34);
+}
+
+/* ---------------------------------------------------------------- Kolo */
+
+.font-display {
+  font-feature-settings: "ss01";
+  letter-spacing: -0.025em;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Ledger paper: faint ruled lines behind receipts and the chain. */
+.ruled {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0,
+    transparent 27px,
+    hsl(var(--border) / 0.6) 27px,
+    hsl(var(--border) / 0.6) 28px
+  );
+}
+
+.dotted-leader {
+  flex: 1 1 auto;
+  min-width: 1rem;
+  border-bottom: 1px dotted hsl(var(--muted-foreground) / 0.45);
+  transform: translateY(-0.3em);
+}
+
+@keyframes kolo-orbit {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes kolo-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes kolo-marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes kolo-pulse-ring {
+  0% {
+    box-shadow: 0 0 0 0 hsl(var(--primary) / 0.35);
+  }
+  100% {
+    box-shadow: 0 0 0 10px hsl(var(--primary) / 0);
+  }
+}
+
+.kolo-rise {
+  animation: kolo-rise 420ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.kolo-marquee {
+  animation: kolo-marquee 38s linear infinite;
+}
+
+.kolo-live-dot {
+  animation: kolo-pulse-ring 1.6s ease-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kolo-rise,
+  .kolo-marquee,
+  .kolo-live-dot {
+    animation: none;
+  }
 }

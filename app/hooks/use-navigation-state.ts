@@ -18,13 +18,16 @@ export interface NavigationState {
   path?: string;
   publicPath?: string;
   threadId?: string;
+  circleId?: string;
+  tab?: string;
 }
 
 export function useNavigationState() {
   useAgentRouteState<NavigationState>({
     browserTabId: TAB_ID,
     requestSource: TAB_ID,
-    getNavigationState: ({ pathname }) => navigationStateForPath(pathname),
+    getNavigationState: ({ pathname, searchParams }) =>
+      navigationStateForPath(pathname, searchParams),
     getCommandPath: commandPathForNavigation,
   });
 }
@@ -62,17 +65,29 @@ function matchesPathPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);
 }
 
-export function navigationStateForPath(pathname: string): NavigationState {
+export function navigationStateForPath(
+  pathname: string,
+  searchParams?: URLSearchParams,
+): NavigationState {
   const threadId = threadIdFromPath(pathname);
+  const circleId = pathname.match(/^\/circles\/([^/]+)/)?.[1];
+  const tab = searchParams?.get("tab");
   return {
     view: viewForPath(pathname),
     path: pathname,
     publicPath: appPathFromLocalRoute(pathname),
     ...(threadId ? { threadId } : {}),
+    ...(circleId && circleId !== "new"
+      ? { circleId: decodeURIComponent(circleId) }
+      : {}),
+    ...(circleId && tab ? { tab } : {}),
   };
 }
 
 function viewForPath(pathname: string): string {
+  if (pathname === "/circles/new") return "new-circle";
+  if (pathname.startsWith("/circles/")) return "circle";
+  if (pathname === "/circles") return "circles";
   if (isChatPathname(pathname)) return "chat";
   if (pathname === HOME_PATH) return "home";
   if (pathname.startsWith("/database")) return "database";
@@ -93,6 +108,10 @@ function pathForView(view?: string): string {
       return NEW_CHAT_PATH;
     case "home":
       return HOME_PATH;
+    case "circles":
+      return "/circles";
+    case "new-circle":
+      return "/circles/new";
     case "database":
       return "/database";
     case "extensions":
