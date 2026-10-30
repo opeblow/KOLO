@@ -93,7 +93,7 @@ export default function NewCircleRoute() {
           <p className="mt-1 text-muted-foreground">It stays a draft until you start it, so nothing here is final yet.</p>
         </div>
 
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <section className="kolo-surface rounded-2xl p-5 sm:p-6">
           <h2 className="font-semibold">Terms</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5 sm:col-span-2">
@@ -132,7 +132,7 @@ export default function NewCircleRoute() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-border bg-card p-5 sm:p-6">
+        <section className="kolo-surface rounded-2xl p-5 sm:p-6">
           <div className="flex items-center justify-between">
             <h2 className="font-semibold">Members, in payout order</h2>
             <span className="text-sm text-muted-foreground">{members.length} added</span>
@@ -200,7 +200,7 @@ export default function NewCircleRoute() {
       </div>
 
       <aside className="space-y-4 lg:sticky lg:top-6 lg:self-start">
-        <div className="rounded-2xl border border-border bg-card p-5">
+        <div className="kolo-surface rounded-2xl p-5">
           <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Each pot</p>
           <p className="mt-1 font-display text-4xl font-bold tabular">
             {CURRENCIES[currency].symbol}
