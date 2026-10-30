@@ -1,9 +1,10 @@
 # Testing
 
 <!-- tests:start -->
+**[CI run on 30 October 2026](https://github.com/opeblow/KOLO/actions/runs/41123707776): 52/52 unit tests and 17/17 end-to-end tests passing** (69/69 total) on Ubuntu 24.04.
 <!-- tests:end -->
 
-These counts are written by `scripts/sync-test-badges.mjs` from the actual result files of the last `pnpm test:all` run. The README badges come from the same run, so the two always agree.
+These counts come from the linked CI run, and the README badges show the same numbers. Running `pnpm test:all` locally rewrites both from your own run's result files, so they always agree with each other.
 
 ## Commands
 
@@ -32,8 +33,9 @@ Public pages run against the **production build** (what visitors get). Signed-in
 
 | Spec | Project(s) | Covers |
 |---|---|---|
-| `landing.spec.ts` (6 tests) | desktop + mobile | Hero and CTAs; live matcher (debits skipped, duplicates refused, strangers unmatched); tamper demo (edit caught, rehash cover-up caught, restore); FAQ by keyboard; no horizontal scroll; no serious axe accessibility violations |
-| `perf.spec.ts` (2 tests) | desktop | CLS < 0.1 and LCP budget on the landing page; public API response time |
+| `landing.spec.ts` (6 tests × 2 viewports = 12) | desktop + mobile | Hero and CTAs; live matcher (debits skipped, duplicates refused, strangers unmatched); tamper demo (edit caught, rehash cover-up caught, restore); FAQ by keyboard; no horizontal scroll; no serious axe accessibility violations |
+| `perf.spec.ts` (1 test) | desktop | CLS < 0.1 and LCP budget on the landing page |
+| `api.spec.ts` (1 test) | app | Public API answers a warm request within budget and returns 404 for bad tokens |
 | `app.spec.ts` (2 tests) | app | Sign in, seed a sample circle, payout locked in the UI **and** refused by the server (`round_not_funded`), inbox, in-browser ledger verification, circles list |
 | `member.spec.ts` (1 test) | app | A signed-out member link re-verifies the ledger, is `noindex`, and bad tokens show a clear error |
 
