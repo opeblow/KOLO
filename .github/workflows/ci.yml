@@ -69,7 +69,7 @@ jobs:
           cache: pnpm
       - run: bash scripts/ci-step.sh "Install" pnpm install --frozen-lockfile
       - name: Install Chromium
-        run: pnpm exec playwright install --with-deps chromium
+        run: bash scripts/ci-step.sh "Install Chromium" pnpm exec playwright install --with-deps chromium
       - name: Run Playwright (production build for public pages, dev server for signed-in flows)
         run: bash scripts/ci-step.sh "End-to-end tests" pnpm test:e2e
       - name: Upload Playwright report
