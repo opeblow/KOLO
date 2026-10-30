@@ -16,11 +16,12 @@ test.describe("organizer workflow", () => {
     expect(refusal.status).toBeGreaterThanOrEqual(400);
     expect(refusal.text).toMatch(/round_not_funded|short/);
 
-    await page.getByRole("button", { name: /^inbox/i }).click();
+    const tabs = page.getByRole("navigation", { name: "Circle sections" });
+    await tabs.getByRole("button", { name: /^inbox/i }).click();
     await expect(page).toHaveURL(/tab=inbox/);
     await expect(page.getByRole("region", { name: "Payments to match" })).toBeVisible();
 
-    await page.getByRole("button", { name: /^ledger$/i }).click();
+    await tabs.getByRole("button", { name: /^ledger$/i }).click();
     await page.getByRole("button", { name: "Verify in this browser" }).click();
     await expect(page.getByText(/verified/i).first()).toBeVisible();
   });
