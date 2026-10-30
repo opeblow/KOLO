@@ -2,7 +2,13 @@
   "name": "kolo",
   "displayName": "Kolo",
   "private": true,
-  "description": "Workspace app for Kolo.",
+  "description": "An AI treasurer for savings circles, with a ledger every member can verify.",
+  "homepage": "https://kolo-62vk.vercel.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opeblow/KOLO.git"
+  },
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "migrate:production": "tsx scripts/migrate-production.ts",
