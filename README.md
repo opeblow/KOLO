@@ -26,6 +26,7 @@
 
 <p align="center">
 <a href="https://kolo-62vk.vercel.app">Live app</a> ·
+<a href="https://youtu.be/WXPPKWr667E">Demo video</a> ·
 <a href="#screenshots">Screenshots</a> ·
 <a href="#run-it">Run it</a> ·
 <a href="docs/ARCHITECTURE.md">System design</a> ·
