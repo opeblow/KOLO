@@ -43,6 +43,12 @@ Built on [Agent-Native](https://agent-native.com) for the Builder.io Agent-Nativ
 
 **Try it now:** [https://kolo-62vk.vercel.app](https://kolo-62vk.vercel.app). Paste bank alerts into the live matcher on the landing page, or try to tamper with the sample ledger. No sign-up needed.
 
+## Demo video
+
+<p align="center"><a href="https://youtu.be/WXPPKWr667E"><img src="https://img.youtube.com/vi/WXPPKWr667E/maxresdefault.jpg" alt="Kolo demo video" width="900" /></a></p>
+
+<p align="center"><a href="https://youtu.be/WXPPKWr667E"><b>Watch the demo video on YouTube</b></a></p>
+
 ## Table of contents
 
 <table>
