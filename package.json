@@ -29,7 +29,7 @@
     "@agent-native/otel": "latest",
     "@agent-native/toolkit": "^0.222.2",
     "@ai-sdk/anthropic": "^3.0.71",
-    "@ai-sdk/cohere": "^3.0.39",
+    "@ai-sdk/cohere": "^4.0.75",
     "@ai-sdk/google": "^3.0.64",
     "@ai-sdk/groq": "^3.0.35",
     "@ai-sdk/mistral": "^3.0.40",
